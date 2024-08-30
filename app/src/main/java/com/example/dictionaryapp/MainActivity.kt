@@ -168,6 +168,7 @@ class MainActivity : AppCompatActivity() {
 
             bottomSheetDialog.dismiss()
             performBackPress()
+            finish()
         }
 
         bottomSheetView.btnCancel.setOnClickListener {
