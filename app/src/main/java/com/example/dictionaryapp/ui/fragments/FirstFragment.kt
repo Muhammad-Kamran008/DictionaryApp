@@ -14,7 +14,7 @@ class FirstFragment : Fragment() {
 
     private var meaning: Meaning? = null
     private lateinit var binding: FragmentFirstBinding
-   // private var wordInfo: WordInfo? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {

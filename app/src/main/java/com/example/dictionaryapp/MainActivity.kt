@@ -1,20 +1,17 @@
 package com.example.dictionaryapp
 
-import android.R
 import android.app.Activity
-import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent
-import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
@@ -25,6 +22,7 @@ import com.example.dictionaryapp.databinding.BottomSheetLayoutBinding
 import com.example.dictionaryapp.databinding.CustomTabLayoutBinding
 import com.example.dictionaryapp.domain.model.WordInfo
 import com.example.dictionaryapp.domain.repository.WordInfoRepo
+import com.example.dictionaryapp.ui.activities.SearchedWords
 import com.example.dictionaryapp.ui.adapters.ViewPagerAdapter
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayout
@@ -64,10 +62,16 @@ class MainActivity : AppCompatActivity() {
         viewPager = binding.viewPager
         dotIndicator = binding.wormDotsIndicator
 
+        setSupportActionBar(binding.toolbar)
+
         animationView.playAnimation()
         searchImageView.setOnClickListener {
             val query = searchEditText.text.toString()
-            filterData(query)
+            if (query.isNotEmpty()) {
+                animationView.visibility = View.GONE
+                viewPager.visibility = View.VISIBLE
+                filterData(query)
+            }
         }
 
         cancelImageView.setOnClickListener {
@@ -93,6 +97,8 @@ class MainActivity : AppCompatActivity() {
                         if (!wordInfoList.isNullOrEmpty()) {
                             val wordInfo = wordInfoList[0]
                             setupTabs(wordInfo)
+                            dotIndicator.visibility = View.VISIBLE
+
                         } else {
                             resetViewPagerAndTabs()
                             animationView.playAnimation()
@@ -135,10 +141,13 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+
     private fun resetViewPagerAndTabs() {
         viewPager.adapter = null
         tabLayout.removeAllTabs()
-        dotIndicator.removeAllViews()
+        dotIndicator.visibility = View.GONE
+        animationView.visibility = View.VISIBLE
+        animationView.playAnimation()
     }
 
 
@@ -177,7 +186,22 @@ class MainActivity : AppCompatActivity() {
 
         bottomSheetDialog.show()
     }
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.toolbar_menu, menu)
+        return true
+    }
 
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_history -> {
+                Log.d("MainActivity", "Navigating to SearchedWords")
+                startActivity(Intent(this, SearchedWords::class.java))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
 }
 
 

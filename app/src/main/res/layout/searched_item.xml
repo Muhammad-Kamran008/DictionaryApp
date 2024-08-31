@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
     android:elevation="5dp"
+    android:backgroundTint="@color/cardview_light_background"
     app:cardCornerRadius="10dp"
     app:cardElevation="5dp"
     app:contentPaddingBottom="10dp"
@@ -40,26 +41,29 @@
             android:minHeight="50dp"
             android:padding="5dp"
             android:scaleType="fitXY"
+            android:layout_marginEnd="10dp"
             android:src="@drawable/baseline_share_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.803"
             app:layout_constraintStart_toEndOf="@id/name"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/delete"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="60dp"
             android:minHeight="50dp"
             android:padding="5dp"
             android:scaleType="fitXY"
             android:src="@drawable/baseline_delete_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@id/share"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintVertical_bias="0.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

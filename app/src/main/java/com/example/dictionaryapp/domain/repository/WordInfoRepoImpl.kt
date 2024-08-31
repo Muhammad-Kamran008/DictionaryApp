@@ -19,14 +19,41 @@ class WordInfoRepoImpl(
         val wordInfos = dao.getWordInfos(word).map { it.toWordInfo() }
         emit(Resource.Loading(data = wordInfos))
 
+//        try {
+//            val remoteWordInfos = api.getWordInfo(word)
+//            dao.insertWordInfos(remoteWordInfos.map { it.toWordInfoEntity() })
+//
+//        } catch (e: HttpException) {
+//            emit(
+//                Resource.Error(
+//                    message = "Sorry word doesn't found",
+//                    data = wordInfos
+//                )
+//            )
+//        } catch (e: IOException) {
+//            emit(
+//                Resource.Error(
+//                    message = "Check your internet connection.",
+//                    data = wordInfos
+//                )
+//            )
+//        }
+
+
+
         try {
-            val remoteWordInfos = api.getWordInfo(word)
-            dao.insertWordInfos(remoteWordInfos.map { it.toWordInfoEntity() })
+            // Fetch from remote only if the word is not already fully in the database
+            if (wordInfos.isEmpty()) {
+                val remoteWordInfos = api.getWordInfo(word)
+                if (remoteWordInfos.isNotEmpty()) {
+                    dao.insertWordInfos(remoteWordInfos.map { it.toWordInfoEntity() })
+                }
+            }
 
         } catch (e: HttpException) {
             emit(
                 Resource.Error(
-                    message = "Sorry word doesn't found",
+                    message = "Sorry, word not found.",
                     data = wordInfos
                 )
             )
@@ -38,6 +65,7 @@ class WordInfoRepoImpl(
                 )
             )
         }
+
 
         val newWordInfos = dao.getWordInfos(word).map { it.toWordInfo() }
         emit(Resource.Success(newWordInfos))
@@ -54,16 +82,6 @@ class WordInfoRepoImpl(
         dao.deleteWordInfos(listOf(wordInfo.word))
     }
 
-    //    override fun getAllWordsInfo(): Flow<Resource<List<List<WordInfo>>>> = flow {
-//        emit(Resource.Loading())
-//
-//        try {
-//            val allWordInfos = dao.getAllWordInfos()
-//            emit(Resource.Success(allWordInfos.map { list -> list.map { it.toWordInfo() } }))
-//        } catch (e: Exception) {
-//            emit(Resource.Error(message = "Error retrieving all words", data = emptyList()))
-//        }
-//    }
     override fun getAllWordsInfo(): Flow<Resource<List<WordInfo>>> = flow {
         emit(Resource.Loading())
 

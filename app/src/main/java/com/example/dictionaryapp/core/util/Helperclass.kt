@@ -1,4 +1,4 @@
-package com.example.dictionaryapp.core.util.helpers
+package com.example.dictionaryapp.core.util
 
 import android.content.Context
 import android.widget.Toast

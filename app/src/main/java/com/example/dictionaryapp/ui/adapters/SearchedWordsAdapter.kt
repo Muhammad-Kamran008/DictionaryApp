@@ -7,11 +7,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.dictionaryapp.databinding.SearchedItemBinding
+import com.example.dictionaryapp.domain.model.Meaning
 import com.example.dictionaryapp.domain.model.WordInfo
 
 class SearchedWordsAdapter(
     private val items: MutableList<WordInfo>,
-    private val context:Context,
+    private val context: Context,
     private val onDeleteClick: (WordInfo) -> Unit
 
 ) :
@@ -48,12 +49,27 @@ class SearchedWordsAdapter(
 
     }
 
-
     private fun handleSendAction(position: Int) {
         val currentWordInfo = items[position]
+        val word = currentWordInfo.word
+
+        val meanings = currentWordInfo.meanings.joinToString(separator = "\n\n") { meaning ->
+            val definitions = meaning.definitions.joinToString(separator = "\n") { definition ->
+                "- ${definition.definition}" + if (definition.example != null) "\n  Example: ${definition.example}" else ""
+            }
+            "Part of Speech: ${meaning.partOfSpeech}\nDefinitions:\n$definitions"
+        }
+        val shareText = """
+        Word: $word
+
+        Meanings:
+        $meanings
+    """.trimIndent()
+
+
         val shareIntent: Intent = Intent().apply {
             action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT,currentWordInfo )
+            putExtra(Intent.EXTRA_TEXT, shareText)
             type = "text/*"
             flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         }
@@ -74,6 +90,7 @@ class SearchedWordsAdapter(
             removeItem(position)
         }
     }
+
     @SuppressLint("NotifyDataSetChanged")
     fun updateItems(newItems: List<WordInfo>) {
         items.clear()

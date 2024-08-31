@@ -7,7 +7,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dictionaryapp.core.util.OnItemDeleteListener
 import com.example.dictionaryapp.core.util.Resource
-import com.example.dictionaryapp.core.util.helpers.toast
+import com.example.dictionaryapp.core.util.toast
 import com.example.dictionaryapp.databinding.ActivitySearchedWordsBinding
 import com.example.dictionaryapp.domain.model.WordInfo
 import com.example.dictionaryapp.ui.adapters.SearchedWordsAdapter
@@ -25,8 +25,9 @@ class SearchedWords : AppCompatActivity(), OnItemDeleteListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchedWordsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
+        setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
         setupRecyclerView()
         observeViewModel()
 
