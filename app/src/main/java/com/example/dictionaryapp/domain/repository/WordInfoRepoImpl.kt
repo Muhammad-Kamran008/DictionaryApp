@@ -19,30 +19,7 @@ class WordInfoRepoImpl(
         val wordInfos = dao.getWordInfos(word).map { it.toWordInfo() }
         emit(Resource.Loading(data = wordInfos))
 
-//        try {
-//            val remoteWordInfos = api.getWordInfo(word)
-//            dao.insertWordInfos(remoteWordInfos.map { it.toWordInfoEntity() })
-//
-//        } catch (e: HttpException) {
-//            emit(
-//                Resource.Error(
-//                    message = "Sorry word doesn't found",
-//                    data = wordInfos
-//                )
-//            )
-//        } catch (e: IOException) {
-//            emit(
-//                Resource.Error(
-//                    message = "Check your internet connection.",
-//                    data = wordInfos
-//                )
-//            )
-//        }
-
-
-
         try {
-            // Fetch from remote only if the word is not already fully in the database
             if (wordInfos.isEmpty()) {
                 val remoteWordInfos = api.getWordInfo(word)
                 if (remoteWordInfos.isNotEmpty()) {
@@ -65,13 +42,9 @@ class WordInfoRepoImpl(
                 )
             )
         }
-
-
         val newWordInfos = dao.getWordInfos(word).map { it.toWordInfo() }
         emit(Resource.Success(newWordInfos))
-
     }
-
 
     override fun deleteAll() {
         dao.deleteAllWordInfos()

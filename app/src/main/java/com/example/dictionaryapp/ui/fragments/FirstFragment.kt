@@ -50,7 +50,6 @@ class FirstFragment : Fragment() {
         }
     }
 
-
     companion object {
         private const val ARG_WORD_INFO = "wordInfo"
         private const val ARG_MEANING = "meaning"

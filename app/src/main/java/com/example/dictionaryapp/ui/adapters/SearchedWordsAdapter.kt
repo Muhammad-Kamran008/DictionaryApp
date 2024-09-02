@@ -5,19 +5,32 @@ import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat.startActivity
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SnapHelper
+import com.example.dictionaryapp.core.util.OnItemSelectedListener
+import com.example.dictionaryapp.databinding.BottomSheetWordBinding
 import com.example.dictionaryapp.databinding.SearchedItemBinding
-import com.example.dictionaryapp.domain.model.Meaning
 import com.example.dictionaryapp.domain.model.WordInfo
+import com.example.dictionaryapp.ui.components.InfoBottomSheet
+import com.google.android.material.bottomsheet.BottomSheetDialog
+
 
 class SearchedWordsAdapter(
-    private val items: MutableList<WordInfo>,
-    private val context: Context,
     private val onDeleteClick: (WordInfo) -> Unit
 
-) :
+) : RecyclerView.Adapter<SearchedWordsAdapter.SearchedWordsViewHolder>() {
 
-    RecyclerView.Adapter<SearchedWordsAdapter.SearchedWordsViewHolder>() {
+    var items: MutableList<WordInfo> = mutableListOf()
+        @SuppressLint("NotifyDataSetChanged")
+        set(value) {
+            field=value
+            notifyDataSetChanged()
+        }
+
 
     class SearchedWordsViewHolder(val binding: SearchedItemBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -25,9 +38,7 @@ class SearchedWordsAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchedWordsViewHolder {
         return SearchedWordsViewHolder(
             SearchedItemBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
+                LayoutInflater.from(parent.context), parent, false
             )
         )
     }
@@ -40,16 +51,19 @@ class SearchedWordsAdapter(
         val taskItem = items[position]
         holder.binding.name.text = items[position].word
         holder.binding.delete.setOnClickListener {
-            onDeleteClick(taskItem)
+            onDeleteClick.invoke(taskItem)
         }
 
         holder.binding.share.setOnClickListener {
-            handleSendAction(position)
+            handleSendAction(position=position,context = holder.binding.share.context,)
         }
-
+        holder.itemView.setOnClickListener {
+            showBottomSheet(holder, position)
+        }
     }
 
-    private fun handleSendAction(position: Int) {
+
+    private fun handleSendAction(context: Context,position: Int) {
         val currentWordInfo = items[position]
         val word = currentWordInfo.word
 
@@ -91,13 +105,12 @@ class SearchedWordsAdapter(
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun updateItems(newItems: List<WordInfo>) {
-        items.clear()
-        items.addAll(newItems)
-        notifyDataSetChanged()
+    @SuppressLint("ClickableViewAccessibility")
+    private fun showBottomSheet(holder: SearchedWordsViewHolder, position: Int) {
+        val currentWordInfo = items[position]
+        InfoBottomSheet(context = holder.itemView.context, currentWordInfo).show()
     }
 
-
 }
+
 

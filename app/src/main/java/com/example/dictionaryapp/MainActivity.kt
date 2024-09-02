@@ -1,33 +1,28 @@
 package com.example.dictionaryapp
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.EditText
-import android.widget.ImageView
 import android.widget.TextView
-import androidx.activity.OnBackPressedCallback
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.viewpager2.widget.ViewPager2
-import com.airbnb.lottie.LottieAnimationView
 import com.example.dictionaryapp.core.util.Resource
+import com.example.dictionaryapp.core.util.onBackButtonPressed
+import com.example.dictionaryapp.core.util.performBackPress
 import com.example.dictionaryapp.databinding.ActivityMainBinding
-import com.example.dictionaryapp.databinding.BottomSheetLayoutBinding
 import com.example.dictionaryapp.databinding.CustomTabLayoutBinding
 import com.example.dictionaryapp.domain.model.WordInfo
 import com.example.dictionaryapp.domain.repository.WordInfoRepo
 import com.example.dictionaryapp.ui.activities.SearchedWords
 import com.example.dictionaryapp.ui.adapters.ViewPagerAdapter
+import com.example.dictionaryapp.ui.components.ExitBottomSheet
+import com.example.dictionaryapp.viewmodel.MainViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.tbuonomo.viewpagerdotsindicator.WormDotsIndicator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -36,55 +31,47 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private lateinit var tabLayout: TabLayout
-    private lateinit var searchEditText: EditText
-    private lateinit var searchImageView: ImageView
-    private lateinit var cancelImageView: ImageView
-    private lateinit var binding: ActivityMainBinding
-    private lateinit var animationView: LottieAnimationView
-    private lateinit var viewPager: ViewPager2
-    private lateinit var dotIndicator: WormDotsIndicator
-    private lateinit var bottomSheetDialog: BottomSheetDialog
+    private val binding by lazy {
+        ActivityMainBinding.inflate(layoutInflater)
+    }
+
 
     @Inject
-    lateinit var wordInfoRepo: WordInfoRepo
+    lateinit var wordInfoRepo: WordInfoRepo //viewmodel
+    // private val mainViewModel: MainViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        tabLayout = binding.tabLayout
-        searchEditText = binding.wordSearch
-        searchImageView = binding.searchImageView
-        cancelImageView = binding.cancel
-        animationView = binding.animationView
-        viewPager = binding.viewPager
-        dotIndicator = binding.wormDotsIndicator
-
         setSupportActionBar(binding.toolbar)
+        initializeView()
+        initializeClickListener()
+    }
 
-        animationView.playAnimation()
-        searchImageView.setOnClickListener {
-            val query = searchEditText.text.toString()
+    private fun initializeView() {
+        binding.animationView.playAnimation()
+    }
+
+    private fun initializeClickListener() {
+        binding.searchImageView.setOnClickListener {
+            val query = binding.wordSearch.text.toString()
             if (query.isNotEmpty()) {
-                animationView.visibility = View.GONE
-                viewPager.visibility = View.VISIBLE
+                binding.animationView.visibility = View.GONE
+                binding.viewPager.visibility = View.VISIBLE
                 filterData(query)
             }
         }
 
-        cancelImageView.setOnClickListener {
-            searchEditText.text.clear()
+        binding.cancel.setOnClickListener {
+            binding.wordSearch.text.clear()
             resetViewPagerAndTabs()
         }
         onBackButtonPressed {
             showBottomSheet()
             true
         }
-
     }
-
 
     private fun filterData(query: String) {
         lifecycleScope.launch {
@@ -92,22 +79,22 @@ class MainActivity : AppCompatActivity() {
             words.collect { resource ->
                 when (resource) {
                     is Resource.Success -> {
-                        animationView.cancelAnimation()
+                        binding.animationView.cancelAnimation()
                         val wordInfoList = resource.data
                         if (!wordInfoList.isNullOrEmpty()) {
                             val wordInfo = wordInfoList[0]
                             setupTabs(wordInfo)
-                            dotIndicator.visibility = View.VISIBLE
+                            binding.wormDotsIndicator.visibility = View.VISIBLE
 
                         } else {
                             resetViewPagerAndTabs()
-                            animationView.playAnimation()
+                            binding.animationView.playAnimation()
                         }
                     }
 
                     is Resource.Error -> {
                         resetViewPagerAndTabs()
-                        animationView.playAnimation()
+                        binding.animationView.playAnimation()
                         Log.d("Error", "onCreate: No data fetched")
                     }
 
@@ -127,65 +114,35 @@ class MainActivity : AppCompatActivity() {
         val partsOfSpeech = wordInfo.meanings.map { it.partOfSpeech }
 
         val adapter = ViewPagerAdapter(wordInfo.meanings, this, bundle)
-        viewPager.adapter = adapter
+        binding.viewPager.adapter = adapter
 
-
-
-        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             val tabView = CustomTabLayoutBinding.inflate(layoutInflater)
             val tabText: TextView = tabView.tabText
             tabText.text = partsOfSpeech[position]
             tab.customView = tabView.tabText
-            dotIndicator.attachTo(viewPager)
+            binding.wormDotsIndicator.attachTo(binding.viewPager)
         }.attach()
 
     }
 
 
     private fun resetViewPagerAndTabs() {
-        viewPager.adapter = null
-        tabLayout.removeAllTabs()
-        dotIndicator.visibility = View.GONE
-        animationView.visibility = View.VISIBLE
-        animationView.playAnimation()
-    }
-
-
-    private fun Activity.onBackButtonPressed(callback: (() -> Boolean)) {
-        (this as? FragmentActivity)?.onBackPressedDispatcher?.addCallback(
-            this,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    if (!callback()) {
-                        remove()
-                        performBackPress()
-                    }
-                }
-            })
-    }
-
-    fun Activity.performBackPress() {
-        (this as? FragmentActivity)?.onBackPressedDispatcher?.onBackPressed()
+        binding.viewPager.adapter = null
+        binding.tabLayout.removeAllTabs()
+        binding.wormDotsIndicator.visibility = View.GONE
+        binding.animationView.visibility = View.VISIBLE
+        binding.animationView.playAnimation()
     }
 
     private fun showBottomSheet() {
-        val bottomSheetView = BottomSheetLayoutBinding.inflate(layoutInflater)
-        bottomSheetDialog = BottomSheetDialog(this)
-        bottomSheetDialog.setContentView(bottomSheetView.root)
-
-        bottomSheetView.btnExit.setOnClickListener {
-
-            bottomSheetDialog.dismiss()
+        ExitBottomSheet.showBottomSheetDialog(this) {
             performBackPress()
             finish()
         }
-
-        bottomSheetView.btnCancel.setOnClickListener {
-            bottomSheetDialog.dismiss()
-        }
-
-        bottomSheetDialog.show()
     }
+
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.toolbar_menu, menu)
         return true
@@ -199,6 +156,7 @@ class MainActivity : AppCompatActivity() {
                 startActivity(Intent(this, SearchedWords::class.java))
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }

@@ -34,7 +34,7 @@ class SearchedWords : AppCompatActivity(), OnItemDeleteListener {
     }
 
     private fun setupRecyclerView() {
-        searchedWordsAdapter = SearchedWordsAdapter(mutableListOf(), this) { taskItem ->
+        searchedWordsAdapter = SearchedWordsAdapter { taskItem ->
             showDeleteConfirmationDialog(taskItem)
         }
 
@@ -53,7 +53,7 @@ class SearchedWords : AppCompatActivity(), OnItemDeleteListener {
 
                     is Resource.Success -> {
                         val words = resource.data!!
-                        searchedWordsAdapter.updateItems(words)
+                        searchedWordsAdapter.items=words.toMutableList()
                     }
 
                     is Resource.Error -> {
