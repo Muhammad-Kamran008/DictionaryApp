@@ -2,6 +2,14 @@
 
 MyDictionary is an Android application built with Kotlin that serves as a powerful dictionary tool, allowing users to search for words and their meanings. The app uses Clean Architecture principles and leverages modern Android development tools such as Dagger Hilt for dependency injection, Retrofit for API calls, Room for local storage, and various UI components like Bottom Sheets and ViewPager.
 
+## Architecture Overview 🏛️
+
+MyDictionary is built using Clean Architecture principles, dividing the app into different layers:
+
+- **Presentation Layer**: Contains UI components and view models.
+- **Domain Layer**: Contains business logic and use cases.
+- **Data Layer**: Handles data management including API requests and local database access.
+
 ## Features ✨
 
 - **Search Words**: Enter any word to find its meaning, pronunciation, usage, and more.
@@ -23,23 +31,7 @@ MyDictionary is an Android application built with Kotlin that serves as a powerf
 - **ViewPager2**: For implementing swipeable views.
 - **Bottom Sheets**: For displaying additional information about words.
 
-## Architecture Overview 🏛️
 
-MyDictionary is built using Clean Architecture principles, dividing the app into different layers:
 
-- **Presentation Layer**: Contains UI components and view models.
-- **Domain Layer**: Contains business logic and use cases.
-- **Data Layer**: Handles data management including API requests and local database access.
 
-## Dependency Injection 🔗
-
-The app uses **Dagger Hilt** for dependency injection, allowing easy management and injection of dependencies throughout the app.
-
-## API Integration 🌐
-
-Retrofit is used to make network requests to a dictionary API to fetch word data. Make sure to set up your API key in the `local.properties` file as described in the **Installation & Setup** section.
-
-## Local Storage 🗂️
-
-The app uses **Room Database** to store all searched words locally, providing offline access to previous searches.
 
