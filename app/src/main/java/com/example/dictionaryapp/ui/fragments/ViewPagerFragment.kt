@@ -7,13 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.example.dictionaryapp.databinding.FragmentFirstBinding
+import com.example.dictionaryapp.databinding.FragmentViewPagerBinding
 import com.example.dictionaryapp.domain.model.Meaning
 
-class FirstFragment : Fragment() {
+class ViewPagerFragment : Fragment() {
 
     private var meaning: Meaning? = null
-    private lateinit var binding: FragmentFirstBinding
+        private lateinit var binding: FragmentViewPagerBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +26,7 @@ class FirstFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding= FragmentFirstBinding.inflate(layoutInflater)
+        binding= FragmentViewPagerBinding.inflate(layoutInflater)
         return binding.root
     }
 

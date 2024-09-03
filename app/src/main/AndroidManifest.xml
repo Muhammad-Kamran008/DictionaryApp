@@ -15,7 +15,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DictionaryApp"
         tools:targetApi="31">
-        <activity android:name=".ui.activities.SearchedWords" />
         <activity
             android:name=".MainActivity"
             android:windowSoftInputMode="adjustPan"
@@ -29,3 +28,4 @@
     </application>
 
 </manifest>
+

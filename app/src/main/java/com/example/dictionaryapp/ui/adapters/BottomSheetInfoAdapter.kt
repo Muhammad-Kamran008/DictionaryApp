@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.dictionaryapp.databinding.WordLayoutBinding
+import com.example.dictionaryapp.databinding.InfoLayoutBinding
 import com.example.dictionaryapp.domain.model.Meaning
 
 class BottomSheetInfoAdapter(
@@ -13,21 +13,19 @@ class BottomSheetInfoAdapter(
     RecyclerView.Adapter<BottomSheetInfoAdapter.LayoutViewHolder>() {
 
     private var selectedPosition = RecyclerView.NO_POSITION
-    private var itemClickListener: ((Int) -> Unit)? = null
 
-    class LayoutViewHolder(val binding: WordLayoutBinding) :
+    class LayoutViewHolder(val binding: InfoLayoutBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LayoutViewHolder {
         return LayoutViewHolder(
-            WordLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            InfoLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
     }
 
     override fun getItemCount(): Int {
         return meanings.size
     }
-
 
     override fun onBindViewHolder(holder: LayoutViewHolder, position: Int) {
 
@@ -46,11 +44,6 @@ class BottomSheetInfoAdapter(
             }
         }
 
-//        holder.itemView.setOnClickListener {
-//            listener.onItemSelected(position)
-//        }
-
-
     }
 
     fun updateSelectedPosition(position: Int) {
@@ -59,7 +52,6 @@ class BottomSheetInfoAdapter(
         notifyItemChanged(previousPosition)
         notifyItemChanged(selectedPosition)
     }
-
 }
 
 

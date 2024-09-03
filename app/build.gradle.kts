@@ -79,9 +79,11 @@ dependencies {
 
     implementation(libs.converter.gson)
 
-    implementation (libs.sdp.android)
+    implementation(libs.sdp.android)
     implementation(libs.dotsindicator)
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01")
+
+    implementation(libs.androidx.fragment)
 
 
 }

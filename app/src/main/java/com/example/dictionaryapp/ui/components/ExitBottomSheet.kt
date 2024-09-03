@@ -7,6 +7,8 @@ object ExitBottomSheet {
 
     fun showBottomSheetDialog(activity: Activity, onExitClick: () -> Unit) {
         val bottomSheetView = BottomSheetLayoutBinding.inflate(activity.layoutInflater)
+        val animationView=bottomSheetView.animationView
+        animationView.playAnimation()
         val bottomSheetDialog = BottomSheetDialog(activity).apply {
             setContentView(bottomSheetView.root)
         }

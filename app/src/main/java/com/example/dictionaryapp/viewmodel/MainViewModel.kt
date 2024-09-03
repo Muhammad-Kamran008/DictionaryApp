@@ -34,9 +34,6 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getWordInfoRepo() {
-        repository
-    }
 
    fun searchWord(word: String) {
         viewModelScope.launch {

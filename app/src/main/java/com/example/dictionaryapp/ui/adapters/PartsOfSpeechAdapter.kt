@@ -28,7 +28,7 @@ class PartsOfSpeechAdapter(private val partsOfSpeech: List<String>) :
 
     override fun onBindViewHolder(holder: PartsOfSpeechViewHolder, position: Int) {
         val speeches = partsOfSpeech[position]
-        holder.binding.word.text = speeches
+        holder.binding.word.text = speeches.uppercase()
 
         holder.binding.word.setBackgroundColor(
             if (position == selectedPosition) Color.CYAN else Color.TRANSPARENT
